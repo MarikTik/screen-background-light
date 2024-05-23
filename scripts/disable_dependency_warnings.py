@@ -1,26 +1,11 @@
 Import("env")
-
+from os import path
 # Define build flags specific to your project files
-project_build_flags = [
-    "-Wall",           
-    "-Wextra",         
-    "-Wpedantic",      
-    '-Wshadow',
-    '-Wpointer-arith',
-    '-Wcast-align',
-    '-Wwrite-strings',
-    '-Wredundant-decls',
-    '-Wmissing-declarations',
-    '-Wdouble-promotion',
-    '-Wformat=2',
-    '-Wconversion',
-    '-Wlogical-op',
-    '-Wnull-dereference',
-    '-Wold-style-cast',
-    '-Woverloaded-virtual',
-    '-Wstrict-aliasing=2',
-    '-Wno-unused-parameter'
-]
+
+warnings_file_path = path.join(env["PROJECT_DIR"], "config", "build", "warnings.txt")
+
+with open(warnings_file_path, "r") as warnings_file:
+    project_build_flags = warnings_file.readlines()
 
 # Append build flags to the environment
 env.Append(
@@ -35,3 +20,5 @@ env.Replace(
 )
 
 src_filter = "+<*> -<.pio>"
+
+ 
