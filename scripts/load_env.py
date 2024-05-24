@@ -1,5 +1,8 @@
 from os import walk, path, environ
 from dataclasses import dataclass
+
+Import("env")
+
 allow_template_creation = True
 
 @dataclass
@@ -35,7 +38,7 @@ def parse_environment_variables(path) -> list[EnvironmentVariable]:
                     if not value.startswith('"'): #if value is not a quoted string
                          value, typename = get_str_value_info(value)  
                          if typename == "string":
-                              value = f'"{value}"'   
+                              value = env.StringifyMacro(value)   
                     vairables.append(EnvironmentVariable(name=name, value=value, typename=typename, description=description))
                     description = ""
      return vairables
@@ -47,8 +50,6 @@ def create_template_file(template_path: str, variables: list[EnvironmentVariable
                file.write(f"{variable.name}=#{variable.typename}\n")
 
 
-Import("env")
- 
 env_path = path.join(env["PROJECT_DIR"], "config", "env")
 template_env_path = path.join(env["PROJECT_DIR"], "config", "env_template")
 
