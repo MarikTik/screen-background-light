@@ -1,11 +1,18 @@
 #include <Arduino.h>
+#include "wifi.h"
+#include "tcp_server.h"
 
+
+static wifi_connection connection(WIFI_SSID, WIFI_PASSWORD, HOSTNAME);
+static tcp_server server(SERVER_PORT);
 
 void setup() {
-  // put your setup code here, to run once:
-  Serial.begin(115200);
+  Serial.begin(BAUD_RATE);
+  connection.begin();
+  server.begin();
 }
 
 void loop(){
-     Serial.println("Hello World");
+  connection.update();
+  server.update();
 }
