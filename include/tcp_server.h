@@ -4,12 +4,13 @@
  
 class tcp_server{
 public:   
-     tcp_server(uint16_t port);
+     tcp_server(const char* hostname, uint16_t port);
      void begin();
      void update();
 
 private:
      WiFiServer _server;
+     const char* _hostname;
 };
 
 
