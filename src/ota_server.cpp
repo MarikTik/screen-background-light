@@ -14,7 +14,7 @@ void ota_server::begin()
      ArduinoOTA.begin();
 
      on_start([]() {
-          #if LOG_LEVEL == LOG_LEVEL_INFO
+          #if LOG_LEVEL >= LOG_LEVEL_INFO
                char ota_upload_type[10]; // max(sizeof("filesystem"), sizeof("sketch")) == 10
                if (ArduinoOTA.getCommand() == U_FLASH) 
                     std::strcpy(ota_upload_type, "sketch");
