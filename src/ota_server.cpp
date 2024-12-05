@@ -1,5 +1,5 @@
 #include "ota_server.h"
-#include "log.h"
+#include "logging.h"
 #include <ArduinoOTA.h>
 #include <cstring>
 ota_server::ota_server(const char *hostname, uint16_t port)
@@ -15,7 +15,7 @@ void ota_server::begin()
 
      on_start([]() {
           #if LOG_LEVEL >= LOG_LEVEL_INFO
-               char ota_upload_type[10]; // max(sizeof("filesystem"), sizeof("sketch")) == 10
+               char ota_upload_type[11]; // max(sizeof("filesystem"), sizeof("sketch")) == 11
                if (ArduinoOTA.getCommand() == U_FLASH) 
                     std::strcpy(ota_upload_type, "sketch");
                else // U_SPIFFS
@@ -24,23 +24,23 @@ void ota_server::begin()
           #endif
      })
      .on_progress([](unsigned int progress, unsigned int total) {
-          log_d("Progress: %u%%\r", (progress / (total / 100)));
+          log_debug("Progress: %u%%\r", (progress / (total / 100)));
      })
      .on_end([]() {
-          log_i("Update complete");
+          log_info("Update complete");
      })
-     .on_error([](ota_error_t error) {
-          log_e("%u", error);
+     .on_error([this](ota_error_t error) {
+               log_fatal("unable to establish connection with %s\terror code: %u", _hostname, error);
           if (error == OTA_AUTH_ERROR)
-               log_e("Auth Failed");
+               log_fatal("Auth Failed");
           else if (error == OTA_BEGIN_ERROR)
-               log_e("Auth Failed");
+               log_error("OTA_BEGIN_ERROR");
           else if (error == OTA_CONNECT_ERROR)
-               log_e("Auth Failed");
+               log_error("OTA_CONNECT_ERROR");
           else if (error == OTA_RECEIVE_ERROR)
-               log_e("Auth Failed");
+               log_error("OTA_RECEIVE_ERROR");
           else if (error == OTA_END_ERROR)
-               log_e("Auth Failed");
+               log_error("OTA_END_ERROR");
      });
 }
 
